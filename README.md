@@ -75,8 +75,17 @@ junit.jupiter.displayname.generator.default = \
 
 ## Assumptions
 
+- `Assumptions` is a collection of utility methods that support conditional test execution based on assumptions
+  - all assumptions are static methods in the [`org.junit.jupiter.api.Assumptions`](https://junit.org/junit5/docs/current/api/org.junit.jupiter.api/org/junit/jupiter/api/Assumptions.html) class
+- Failed assumptions do not result in a test failure; a failed assumption results in a test being aborted
+- Assumptions are typically used whenever it does not make sense to continue execution of a given test method
+  - e.g., if the test depends on something that does not exist in the current runtime environment
+- See [`assumptions/AssumptionsDemo.java`](src/test/java/com/jashburn/junit5/assumptions/AssumptionsDemo.java)
+
 ## Sources
 
 - "JUnit 5 User Guide." <https://junit.org/junit5/docs/current/user-guide/>.
 - "junit5/documentation." <https://github.com/junit-team/junit5/tree/master/documentation>.
 - "JUnit 5 Tutorial: Writing Assertions With JUnit 5 Assertion API." <https://www.petrikainulainen.net/programming/testing/junit-5-tutorial-writing-assertions-with-junit-5-api/>.
+- "Assertions (JUnit 5.6.2 API)." <https://junit.org/junit5/docs/current/api/org.junit.jupiter.api/org/junit/jupiter/api/Assertions.html>.
+- "Assumptions (JUnit 5.6.2 API). "<https://junit.org/junit5/docs/current/api/org.junit.jupiter.api/org/junit/jupiter/api/Assumptions.html>.
