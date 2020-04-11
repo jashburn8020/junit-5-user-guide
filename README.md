@@ -82,6 +82,15 @@ junit.jupiter.displayname.generator.default = \
   - e.g., if the test depends on something that does not exist in the current runtime environment
 - See [`assumptions/AssumptionsDemo.java`](src/test/java/com/jashburn/junit5/assumptions/AssumptionsDemo.java)
 
+## Conditional Test Execution
+
+- Entire test classes or individual test methods may be disabled via the **`@Disabled`** annotation
+- Other annotation-based conditions in the [`org.junit.jupiter.api.condition`](https://junit.org/junit5/docs/current/api/org.junit.jupiter.api/org/junit/jupiter/api/condition/package-summary.html) package allow developers to enable or disable containers and tests declaratively
+  - operating system conditions: `@EnabledOnOs` and `@DisabledOnOs`
+  - Java Runtime Environment conditions: `@EnabledOnJre` and `@DisabledOnJre`, `@EnabledForJreRange` and `@DisabledForJreRange`
+  - JVM system property conditions: `@EnabledIfSystemProperty` and `@DisabledIfSystemProperty`
+  - environment variable conditions: `@EnabledIfEnvironmentVariable` and `@DisabledIfEnvironmentVariable`
+
 ## Sources
 
 - "JUnit 5 User Guide." <https://junit.org/junit5/docs/current/user-guide/>.
