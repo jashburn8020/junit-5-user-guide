@@ -136,7 +136,27 @@ class TaggingDemo {
     - `Alphanumeric`: sorts test methods alphanumerically based on their names and formal parameter lists
     - `OrderAnnotation`: sorts test methods numerically based on values specified via the `@Order` annotation
     - `Random`: orders test methods pseudo-randomly and supports configuration of a custom seed
--
+- See [`testexecutionorder/OrderedTestsDemo.java`](src/test/java/com/jashburn/junit5/testexecutionorder/OrderedTestsDemo.java)
+
+## Test Instance Lifecycle
+
+- JUnit creates a new instance of each test class before executing each test method in order to allow individual test methods to be executed in isolation, and to avoid unexpected side effects due to mutable test instance state
+  - i.e., the default mode is `Lifecycle.PER_METHOD`
+- To execute all test methods on the same test instance
+  - annotate test class with `@TestInstance(Lifecycle.PER_CLASS)`
+  - a new test instance will be created once per test class
+  - if your test methods rely on state stored in instance variables, you may need to reset that state in `@BeforeEach` or `@AfterEach` methods
+  - some benefits over the default "per-method" mode:
+    - possible to declare `@BeforeAll` and `@AfterAll` on non-static methods as well as on interface default methods
+    - possible to use `@BeforeAll` and `@AfterAll` methods in `@Nested` test classes
+- To change the default test instance lifecycle mode for the execution of an entire test plan
+  - set the `junit.jupiter.testinstance.lifecycle.default` configuration parameter to the name of an enum constant defined in `TestInstance.Lifecycle`, ignoring case
+    - JVM system property
+      - `-Djunit.jupiter.testinstance.lifecycle.default=per_class`
+    - configuration parameter in the `LauncherDiscoveryRequest` that is passed to the `Launcher`
+    - JUnit Platform configuration file
+      - in `junit-platform.properties` in the root of the class path (e.g., `src/test/resources`):
+        - `junit.jupiter.testinstance.lifecycle.default = per_class`
 
 ## Sources
 
