@@ -96,7 +96,7 @@ junit.jupiter.displayname.generator.default = \
 - Test classes and methods can be tagged via the **`@Tag`** annotation
 - Tags can later be used to filter test discovery and execution
 - Syntax rules for tags:
-  - must not be null or blankA trimmed tag
+  - must not be null or blank
   - must not contain whitespace
   - must not contain ISO control characters
   - must not contain any of the following reserved characters:
@@ -122,6 +122,21 @@ class TaggingDemo {
 
 }
 ```
+
+## Test Execution Order
+
+- By default, test methods are ordered using an algorithm that is deterministic but intentionally non-obvious
+- Although true unit tests typically should not rely on the order in which they are executed, there are times when it is necessary to enforce a specific test method execution order
+  - when writing integration tests or functional tests where the sequence of the tests is important
+  - in conjunction with `@TestInstance(Lifecycle.PER_CLASS)`
+- To control the order in which test methods are executed
+  - annotate your test class or test interface with `@TestMethodOrder`
+  - specify the desired `MethodOrderer` implementation
+    - implement your own custom MethodOrderer
+    - `Alphanumeric`: sorts test methods alphanumerically based on their names and formal parameter lists
+    - `OrderAnnotation`: sorts test methods numerically based on values specified via the `@Order` annotation
+    - `Random`: orders test methods pseudo-randomly and supports configuration of a custom seed
+-
 
 ## Sources
 
