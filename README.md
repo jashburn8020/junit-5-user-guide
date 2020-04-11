@@ -91,6 +91,38 @@ junit.jupiter.displayname.generator.default = \
   - JVM system property conditions: `@EnabledIfSystemProperty` and `@DisabledIfSystemProperty`
   - environment variable conditions: `@EnabledIfEnvironmentVariable` and `@DisabledIfEnvironmentVariable`
 
+## Tagging
+
+- Test classes and methods can be tagged via the **`@Tag`** annotation
+- Tags can later be used to filter test discovery and execution
+- Syntax rules for tags:
+  - must not be null or blankA trimmed tag
+  - must not contain whitespace
+  - must not contain ISO control characters
+  - must not contain any of the following reserved characters:
+    - comma (`,`)
+    - left or right parenthesis (`(`, `)`)
+    - ampersand (`&`)
+    - vertical bar (`|`)
+    - exclamation point (`!`)
+- Example:
+
+```java
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
+@Tag("fast")
+@Tag("model")
+class TaggingDemo {
+
+    @Test
+    @Tag("taxes")
+    void testingTaxCalculation() {
+    }
+
+}
+```
+
 ## Sources
 
 - "JUnit 5 User Guide." <https://junit.org/junit5/docs/current/user-guide/>.
