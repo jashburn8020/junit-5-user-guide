@@ -63,6 +63,20 @@ junit.jupiter.displayname.generator.default = \
 
 ## Assertions
 
+- All JUnit Jupiter assertions are static methods in the [`org.junit.jupiter.api.Assertions`](https://junit.org/junit5/docs/current/api/org.junit.jupiter.api/org/junit/jupiter/api/Assertions.html) class
+- See:
+  - [`assertions/AssertionsDemo.java`](src/test/java/com/jashburn/junit5/assertions/AssertionsDemo.java)
+  - [`assertions/TimeoutAssertions.java`](src/test/java/com/jashburn/junit5/assertions/TimeoutAssertions.java)
+- Third-party assertion libraries
+  - when more power and additional functionality such as matchers are desired or required
+    - e.g., for a combination of matchers and a fluent API to make assertions more descriptive and readable
+  - use the built-in support for matchers provided by third-party assertion libraries such as AssertJ, Hamcrest, Truth, etc
+  - e.g., as long as the Hamcrest library has been added to the classpath, you can statically import methods such as `assertThat()`, `is()`, and `equalTo()`, and then use them in tests
+
+## Assumptions
+
 ## Sources
 
 - "JUnit 5 User Guide." <https://junit.org/junit5/docs/current/user-guide/>.
+- "junit5/documentation." <https://github.com/junit-team/junit5/tree/master/documentation>.
+- "JUnit 5 Tutorial: Writing Assertions With JUnit 5 Assertion API." <https://www.petrikainulainen.net/programming/testing/junit-5-tutorial-writing-assertions-with-junit-5-api/>.
