@@ -140,7 +140,9 @@ class TaggingDemo {
 
 ## Test Instance Lifecycle
 
-- JUnit creates a new instance of each test class before executing each test method in order to allow individual test methods to be executed in isolation, and to avoid unexpected side effects due to mutable test instance state
+- JUnit creates a new instance of each test class before executing each test method
+  - to allow individual test methods to be executed in isolation
+  - to avoid unexpected side effects due to mutable test instance state
   - i.e., the default mode is `Lifecycle.PER_METHOD`
 - To execute all test methods on the same test instance
   - annotate test class with `@TestInstance(Lifecycle.PER_CLASS)`
@@ -156,7 +158,7 @@ class TaggingDemo {
     - configuration parameter in the `LauncherDiscoveryRequest` that is passed to the `Launcher`
     - JUnit Platform configuration file
       - in `junit-platform.properties` in the root of the class path (e.g., `src/test/resources`):
-        - `junit.jupiter.testinstance.lifecycle.default = per_class`
+      - `junit.jupiter.testinstance.lifecycle.default = per_class`
 
 ## Nested Tests
 
@@ -166,6 +168,52 @@ class TaggingDemo {
 - Inner classes are considered to be full members of the test class family with one exception: `@BeforeAll` and `@AfterAll` methods do not work by default
 - `@BeforeEach` and `@AfterEach` methods are called for each of the current and descendant test methods
 - See [`nestedtests/TestingAStackDemo.java`](src/test/java/com/jashburn/junit5/nestedtests/TestingAStackDemo.java)
+
+## Dependency Injection for Constructors and Methods
+
+- All prior JUnit versions - test constructors or methods were not allowed to have parameters with the standard Runner implementations
+- JUnit Jupiter - both test constructors and methods are permitted to have parameters
+  - allows for greater flexibility and enables Dependency Injection for constructors and methods
+- [`ParameterResolver`](https://junit.org/junit5/docs/current/api/org.junit.jupiter.api/org/junit/jupiter/api/extension/ParameterResolver.html)
+  - defines the API for test extensions that wish to dynamically resolve parameters at runtime
+  - resolve parameter at runtime for test class constructor, test method, and lifecycle method
+  - 3 built-in resolvers are registered automatically
+- [**`TestInfoParameterResolver`**](https://github.com/junit-team/junit5/tree/r5.6.2/junit-jupiter-engine/src/main/java/org/junit/jupiter/engine/extension/TestInfoParameterResolver.java)
+  - for parameter type [`TestInfo`](https://junit.org/junit5/docs/current/api/org.junit.jupiter.api/org/junit/jupiter/api/TestInfo.html)
+    - in `@Test`, `@RepeatedTest`, `@ParameterizedTest`, `@TestFactory`, `@BeforeEach`, `@AfterEach`, `@BeforeAll`, and `@AfterAll` methods
+  - supply an instance of `TestInfo` corresponding to the current container or test as the value for the parameter
+    - provides information about the current container or test
+      - display name (either a technical name - name of the test class or test method - or a custom name configured via `@DisplayName`)
+      - test class
+      - test method
+      - associated tags
+  - `TestInfo` acts as a drop-in replacement for the `TestName` rule from JUnit 4
+  - see [`dependencyinjection/TestInfoDemo.java`](src/test/java/com/jashburn/junit5/dependencyinjection/TestInfoDemo.java)
+- [**`RepetitionInfoParameterResolver`**](https://github.com/junit-team/junit5/tree/r5.6.2/junit-jupiter-engine/src/main/java/org/junit/jupiter/engine/extension/RepetitionInfoParameterResolver.java)
+  - for parameter type [`RepetitionInfo`](https://junit.org/junit5/docs/current/api/org.junit.jupiter.api/org/junit/jupiter/api/RepetitionInfo.html)
+    - in `@RepeatedTest`, `@BeforeEach`, or `@AfterEach` methods
+  - supply an instance of `RepetitionInfo`
+    - provides information about the current repetition and the total number of repetitions for the corresponding `@RepeatedTest`
+  - note: `RepetitionInfoParameterResolver` is not registered outside the context of a `@RepeatedTest`
+  - see 'Repeated Tests' for an example
+- [**`TestReporterParameterResolver`**](https://github.com/junit-team/junit5/tree/r5.6.2/junit-jupiter-engine/src/main/java/org/junit/jupiter/engine/extension/TestReporterParameterResolver.java)
+  - for parameter type [`TestReporter`](https://junit.org/junit5/docs/current/api/org.junit.jupiter.api/org/junit/jupiter/api/TestReporter.html)
+    - in `@BeforeEach` and `@AfterEach` lifecycle methods as well as methods annotated with `@Test`, `@RepeatedTest`, `@ParameterizedTest`, `@TestFactory`, etc.
+  - supply an instance of `TestReporter`
+    - used to publish additional data about the current test run
+    - data can be consumed via the `reportingEntryPublished()` method in a `TestExecutionListener`
+      - viewed in IDEs or included in reports
+  - use `TestReporter` where you used to print information to stdout or stderr in JUnit 4
+    - using `@RunWith(JUnitPlatform.class)` will output all reported entries to stdout
+  - see [`dependencyinjection/TestReporterDemo.java`](src/test/java/com/jashburn/junit5/dependencyinjection/TestReporterDemo.java)
+- Custom parameter resolvers
+  - must be explicitly enabled by registering appropriate extensions via `@ExtendWith`
+  - see
+    - [`dependencyinjection/RandomParametersExtension.java`](src/test/java/com/jashburn/junit5/dependencyinjection/RandomParametersExtension.java)
+    - [`dependencyinjection/RandomParametersTest.java`](src/test/java/com/jashburn/junit5/dependencyinjection/RandomParametersTest.java)
+  - when the type of the parameter to inject is the only condition for your `ParameterResolver`
+    - use the generic [`TypeBasedParameterResolver`](https://github.com/junit-team/junit5/tree/r5.6.2/junit-jupiter-api/src/main/java/org/junit/jupiter/api/extension/support/TypeBasedParameterResolver.java) base class
+    - the `supportsParameters` method is implemented behind the scenes and supports parameterized types
 
 ## Sources
 

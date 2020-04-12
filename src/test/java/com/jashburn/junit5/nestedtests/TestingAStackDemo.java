@@ -68,8 +68,8 @@ class TestingAStackDemo {
     class WhenNew {
 
         /*
-         * Note necessary to instantiate a new Stack here - parent @BeforeEach is called when each
-         * of the test methods in this nested class is executed.
+         * Not necessary to instantiate a new Stack here - parent @BeforeEach is called when each of
+         * the test methods in this nested class is executed.
          */
 
         @Test
