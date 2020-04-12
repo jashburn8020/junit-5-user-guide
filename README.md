@@ -215,6 +215,23 @@ class TaggingDemo {
     - use the generic [`TypeBasedParameterResolver`](https://github.com/junit-team/junit5/tree/r5.6.2/junit-jupiter-api/src/main/java/org/junit/jupiter/api/extension/support/TypeBasedParameterResolver.java) base class
     - the `supportsParameters` method is implemented behind the scenes and supports parameterized types
 
+## Test Interfaces and Default Methods
+
+- `@Test`, `@RepeatedTest`, `@ParameterizedTest`, `@TestFactory`, `@TestTemplate`, `@BeforeEach`, and `@AfterEach` can be declared on interface default methods
+- `@BeforeAll` and `@AfterAll` can be declared either on static methods in a test interface or on interface default methods if the test interface or test class is annotated with `@TestInstance(Lifecycle.PER_CLASS)`
+- See:
+  - [`testinterfaces/TestLifecycleLogger.java`](src/test/java/com/jashburn/junit5/testinterfaces/TestLifecycleLogger.java)
+  - [`testinterfaces/TestInterfaceUser.java`](src/test/java/com/jashburn/junit5/testinterfaces/TestInterfaceUser.java)
+- `@ExtendWith` and `@Tag` can be declared on a test interface so that classes that implement the interface automatically inherit its tags and extensions
+- Another possible application of this feature is to write tests for interface contracts
+  - e.g., you can write tests for how implementations of `Object.equals` or `Comparable.compareTo` should behave
+    - test class can then implement both contract interfaces thereby inheriting the corresponding tests
+    - see:
+      - [`testinterfaces/Testable.java`](src/test/java/com/jashburn/junit5/testinterfaces/Testable.java)
+      - [`testinterfaces/EqualsContract.java`](src/test/java/com/jashburn/junit5/testinterfaces/EqualsContract.java)
+      - [`testinterfaces/ComparableContract.java`](src/test/java/com/jashburn/junit5/testinterfaces/ComparableContract.java)
+      - [`testinterfaces/RankTest.java`](src/test/java/com/jashburn/junit5/testinterfaces/RankTest.java)
+
 ## Sources
 
 - "JUnit 5 User Guide." <https://junit.org/junit5/docs/current/user-guide/>.
