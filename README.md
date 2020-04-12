@@ -158,6 +158,15 @@ class TaggingDemo {
       - in `junit-platform.properties` in the root of the class path (e.g., `src/test/resources`):
         - `junit.jupiter.testinstance.lifecycle.default = per_class`
 
+## Nested Tests
+
+- `@Nested` tests give the test writer more capabilities to express the relationship among several groups of tests
+- Only non-static nested classes (i.e. inner classes) can serve as `@Nested` test classes
+- Nesting can be arbitrarily deep
+- Inner classes are considered to be full members of the test class family with one exception: `@BeforeAll` and `@AfterAll` methods do not work by default
+- `@BeforeEach` and `@AfterEach` methods are called for each of the current and descendant test methods
+- See [`nestedtests/TestingAStackDemo.java`](src/test/java/com/jashburn/junit5/nestedtests/TestingAStackDemo.java)
+
 ## Sources
 
 - "JUnit 5 User Guide." <https://junit.org/junit5/docs/current/user-guide/>.
