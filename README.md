@@ -232,6 +232,20 @@ class TaggingDemo {
       - [`testinterfaces/ComparableContract.java`](src/test/java/com/jashburn/junit5/testinterfaces/ComparableContract.java)
       - [`testinterfaces/RankTest.java`](src/test/java/com/jashburn/junit5/testinterfaces/RankTest.java)
 
+## Repeated Tests
+
+- Repeat a test a specified number of times by annotating a method with `@RepeatedTest` and specifying the total number of repetitions
+- Each invocation of a repeated test behaves like the execution of a regular `@Test` method with full support for the same lifecycle callbacks and extensions
+- A custom display name can be configured for each repetition via the `name` attribute of the `@RepeatedTest` annotation
+  - display name can be a pattern composed of a combination of static text and dynamic placeholders
+    - `{displayName}`: display name of the `@RepeatedTest` method
+    - `{currentRepetition}`: the current repetition count
+    - `{totalRepetitions}`: the total number of repetitions
+  - default display name for a given repetition is generated based on: `"repetition {currentRepetition} of {totalRepetitions}"`
+  - predefined `RepeatedTest.LONG_DISPLAY_NAME` pattern: `"{displayName} :: repetition {currentRepetition} of {totalRepetitions}"`
+- Inject an instance of `RepetitionInfo` into `@RepeatedTest`, `@BeforeEach`, or `@AfterEach` method to retrieve information about the current repetition and the total number of repetitions
+-
+
 ## Sources
 
 - "JUnit 5 User Guide." <https://junit.org/junit5/docs/current/user-guide/>.
