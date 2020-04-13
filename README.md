@@ -343,6 +343,15 @@ class TaggingDemo {
   - by specifying one or more `nullValues`, a custom value can be interpreted as a `null` reference
 - See [`parameterizedtests/CsvSourceTests.java`](src/test/java/com/jashburn/junit5/parameterizedtests/CsvSourceTests.java)
 
+#### `@CsvFileSource`
+
+- Lets you use CSV files from the classpath
+- Any line beginning with a `#` symbol will be interpreted as a comment and will be ignored
+- Uses a double quote (`"`) as the quote character
+- See:
+  - [`parameterizedtests/CsvFileSourceTests.java`](src/test/java/com/jashburn/junit5/parameterizedtests/CsvFileSourceTests.java)
+  - [`resources/csv_file_resource.csv`](src/test/resources/csv_file_resource.csv)
+
 ## Sources
 
 - "JUnit 5 User Guide." <https://junit.org/junit5/docs/current/user-guide/>.
