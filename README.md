@@ -244,7 +244,7 @@ class TaggingDemo {
   - default display name for a given repetition is generated based on: `"repetition {currentRepetition} of {totalRepetitions}"`
   - predefined `RepeatedTest.LONG_DISPLAY_NAME` pattern: `"{displayName} :: repetition {currentRepetition} of {totalRepetitions}"`
 - Inject an instance of `RepetitionInfo` into `@RepeatedTest`, `@BeforeEach`, or `@AfterEach` method to retrieve information about the current repetition and the total number of repetitions
--
+- See [`repeatedtests/RepeatedTestsDemo.java`](src/test/java/com/jashburn/junit5/repeatedtests/RepeatedTestsDemo.java)
 
 ## Sources
 
