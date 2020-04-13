@@ -329,7 +329,19 @@ class TaggingDemo {
       - `multiArgArgumentsStream()`
       - `multiArgArray()`
   - an **external, `static` factory method** can be referenced by providing its fully qualified method name
-  - e.g., `@MethodSource("example.StringsProviders#tinyStrings")`
+    - e.g., `@MethodSource("example.StringsProviders#tinyStrings")`
+
+#### `@CsvSource`
+
+- Allows you to express argument lists as comma-separated values (i.e., `String` literals)
+- Default delimiter is a comma (`,`), but you can use another character by setting the `delimiter` attribute
+  - `delimiterString` attribute allows you to use a String delimiter
+  - `delimiter` and `delimiterString` attributes cannot be set simultaneously
+- Uses a single quote (`'`) as its quote character
+- An empty quoted value (`''`) results in an empty `String` unless the `emptyValue` attribute is set
+- An entirely empty value is interpreted as a `null` reference
+  - by specifying one or more `nullValues`, a custom value can be interpreted as a `null` reference
+- See [`parameterizedtests/CsvSourceTests.java`](src/test/java/com/jashburn/junit5/parameterizedtests/CsvSourceTests.java)
 
 ## Sources
 
