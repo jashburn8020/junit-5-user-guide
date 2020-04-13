@@ -234,7 +234,7 @@ class TaggingDemo {
 
 ## Repeated Tests
 
-- Repeat a test a specified number of times by annotating a method with `@RepeatedTest` and specifying the total number of repetitions
+- Repeats a test a specified number of times by annotating a method with `@RepeatedTest` and specifying the total number of repetitions
 - Each invocation of a repeated test behaves like the execution of a regular `@Test` method with full support for the same lifecycle callbacks and extensions
 - A custom display name can be configured for each repetition via the `name` attribute of the `@RepeatedTest` annotation
   - display name can be a pattern composed of a combination of static text and dynamic placeholders
@@ -245,6 +245,63 @@ class TaggingDemo {
   - predefined `RepeatedTest.LONG_DISPLAY_NAME` pattern: `"{displayName} :: repetition {currentRepetition} of {totalRepetitions}"`
 - Inject an instance of `RepetitionInfo` into `@RepeatedTest`, `@BeforeEach`, or `@AfterEach` method to retrieve information about the current repetition and the total number of repetitions
 - See [`repeatedtests/RepeatedTestsDemo.java`](src/test/java/com/jashburn/junit5/repeatedtests/RepeatedTestsDemo.java)
+
+## Parameterized Tests
+
+- Parameterized tests make it possible to run a test multiple times with different arguments
+- Needs dependency on the `junit-jupiter-params` artifact
+  - included in the `junit-jupiter` artifact, otherwise add separately
+- Declared just like regular `@Test` methods but use the `@ParameterizedTest` annotation instead
+  - must declare at least one _source_ that will provide the arguments for each invocation, and then _consume_ the arguments in the test method
+
+### Consuming Arguments
+
+- Parameterized test methods typically consume arguments directly from the configured source following a one-to-one correlation between argument source index and method parameter index (as with `@CsvSource`)
+- A parameterized test method may choose to aggregate arguments from the source into a single object passed to the method (see 'Argument Aggregation')
+- Additional arguments may be provided by a `ParameterResolver`
+- A parameterized test method must declare formal parameters according to the following rules:
+  - Zero or more indexed arguments must be declared first
+  - Zero or more aggregators must be declared next.
+  - Zero or more arguments supplied by a ParameterResolver must be declared last.
+- An aggregator is any parameter of type `ArgumentsAccessor` or any parameter annotated with `@AggregateWith`
+
+### Sources of Arguments
+
+- See [org.junit.jupiter.params.provider](https://junit.org/junit5/docs/current/api/org.junit.jupiter.params/org/junit/jupiter/params/provider/package-summary.html) package
+
+#### `@ValueSource`
+
+- Specifies a single array of literal values, and provide a single argument per parameterized test invocation
+- Supported literal values: `short`, `byte`, `int`, `long`, `float`, `double`, `char`, `boolean`, `java.lang.String`, `java.lang.Class`
+- See [`parameterizedtests/ValueSourceTests.java`](src/test/java/com/jashburn/junit5/parameterizedtests/ValueSourceTests.java)
+
+#### Null and Empty Sources
+
+- It can be useful to have null and empty values supplied to our parameterized tests
+- The following annotations serve as sources of null and empty values for parameterized tests that accept a single argument:
+  - `@NullSource`: provides a single null argument
+    - cannot be used for a parameter that has a primitive type
+  - `@EmptySource`: provides a single empty argument
+    - for parameters of the following types: `java.lang.String`, `java.util.List`, `java.util.Set`, `java.util.Map`, primitive arrays (e.g., `int[]`, `char[][]`), object arrays (e.g., `String[]`, `Integer[][]`)
+    - subtypes of the supported types are not supported
+  - `@NullAndEmptySource`: a composed annotation that combines the functionality of `@NullSource` and `@EmptySource`
+- Supply multiple varying types of blank strings by using `@ValueSource`
+  - `@ValueSource(strings = {" ", " ", "\t", "\n"})`
+- See [`parameterizedtests/ValueSourceTests.java`](src/test/java/com/jashburn/junit5/parameterizedtests/ValueSourceTests.java)
+
+#### `@EnumSource`
+
+- Provides a convenient way to use `Enum` constants
+- `value` attribute is optional
+  - when omitted, the declared type of the first method parameter is used
+  - is required when the test method parameter is declared with an interface type
+- `names` attribute is optional
+  - lets you specify which constants shall be used
+  - if omitted, all constants will be used
+- `mode` attribute is optional
+  - enables fine-grained control over which constants are passed to the test method
+  - e.g., you can exclude names from the enum constant pool, or specify regular expressions
+- See [`parameterizedtests/EnumSourceTests.java`](src/test/java/com/jashburn/junit5/parameterizedtests/EnumSourceTests.java)
 
 ## Sources
 
