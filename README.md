@@ -352,6 +352,12 @@ class TaggingDemo {
   - [`parameterizedtests/CsvFileSourceTests.java`](src/test/java/com/jashburn/junit5/parameterizedtests/CsvFileSourceTests.java)
   - [`resources/csv_file_resource.csv`](src/test/resources/csv_file_resource.csv)
 
+#### `@ArgumentsSource`
+
+- To specify a custom, reusable `ArgumentsProvider`
+  - an implementation of `ArgumentsProvider` must be declared as either a top-level class or as a `static` nested class
+- See [`parameterizedtests/ArgumentsSourceTests.java`](src/test/java/com/jashburn/junit5/parameterizedtests/ArgumentsSourceTests.java)
+
 ## Sources
 
 - "JUnit 5 User Guide." <https://junit.org/junit5/docs/current/user-guide/>.
