@@ -303,6 +303,34 @@ class TaggingDemo {
   - e.g., you can exclude names from the enum constant pool, or specify regular expressions
 - See [`parameterizedtests/EnumSourceTests.java`](src/test/java/com/jashburn/junit5/parameterizedtests/EnumSourceTests.java)
 
+#### `@MethodSource`
+
+- Allows you to refer to one or more factory methods of the test class or external classes
+- Factory methods
+  - within the test class: must be `static` unless the test class is annotated with `@TestInstance(Lifecycle.PER_CLASS)`
+  - in external classes: must always be `static`
+  - must not accept any arguments
+- Each factory method must generate a stream of arguments
+  - stream: anything that JUnit can reliably convert into a `Stream`, such as `Stream`, `DoubleStream`, `Collection`, `Iterator`, `Iterable`, an array of objects, or an array of primitives
+  - arguments: can be supplied as an instance of `Arguments`, an array of objects (e.g., `Object[]`), or a single value if the parameterized test method accepts a single argument
+    - `Arguments`: an abstraction that provides access to an array of objects
+- Examples
+  - for all cases below, see [`parameterizedtests/MethodSourceTests.java`](src/test/java/com/jashburn/junit5/parameterizedtests/MethodSourceTests.java)
+  - if you only need a **single parameter**, you can return a `Stream` of instances of the parameter type
+    - see:
+      - `explicitLocalMethodSourceStream()`
+      - `explicitLocalMethodSourceArray()`
+  - if you do not explicitly provide a **factory method name** via `@MethodSource`, JUnit Jupiter will search for a factory method that has the same name as the current `@ParameterizedTest` method
+    - see `testWithDefaultLocalMethodSource()`
+  - streams for **primitive types** (`DoubleStream`, `IntStream`, and `LongStream`) are also supported
+    - see `testOddIntegers()`
+  - if a parameterized test method declares **multiple parameters**, you need to return a collection, stream, or array of `Arguments` instances or object arrays
+    - see:
+      - `multiArgArgumentsStream()`
+      - `multiArgArray()`
+  - an **external, `static` factory method** can be referenced by providing its fully qualified method name
+  - e.g., `@MethodSource("example.StringsProviders#tinyStrings")`
+
 ## Sources
 
 - "JUnit 5 User Guide." <https://junit.org/junit5/docs/current/user-guide/>.
