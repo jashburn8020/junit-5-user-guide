@@ -422,7 +422,6 @@ class TaggingDemo {
 - You can customize invocation display names via the `name` attribute of the `@ParameterizedTest` annotation
 - See [`parameterizedtests/CustomDisplayNames.java`](src/test/java/com/jashburn/junit5/parameterizedtests/CustomDisplayNames.java)
 
->>>>>>> dev
 ## Sources
 
 - "JUnit 5 User Guide." <https://junit.org/junit5/docs/current/user-guide/>.
