@@ -234,7 +234,11 @@ class TaggingDemo {
 
 ## Repeated Tests
 
+<<<<<<< HEAD
 - Repeat a test a specified number of times by annotating a method with `@RepeatedTest` and specifying the total number of repetitions
+=======
+- Repeats a test a specified number of times by annotating a method with `@RepeatedTest` and specifying the total number of repetitions
+>>>>>>> dev
 - Each invocation of a repeated test behaves like the execution of a regular `@Test` method with full support for the same lifecycle callbacks and extensions
 - A custom display name can be configured for each repetition via the `name` attribute of the `@RepeatedTest` annotation
   - display name can be a pattern composed of a combination of static text and dynamic placeholders
@@ -246,6 +250,179 @@ class TaggingDemo {
 - Inject an instance of `RepetitionInfo` into `@RepeatedTest`, `@BeforeEach`, or `@AfterEach` method to retrieve information about the current repetition and the total number of repetitions
 - See [`repeatedtests/RepeatedTestsDemo.java`](src/test/java/com/jashburn/junit5/repeatedtests/RepeatedTestsDemo.java)
 
+<<<<<<< HEAD
+=======
+## Parameterized Tests
+
+- Parameterized tests make it possible to run a test multiple times with different arguments
+- Needs dependency on the `junit-jupiter-params` artifact
+  - included in the `junit-jupiter` artifact, otherwise add separately
+- Declared just like regular `@Test` methods but use the `@ParameterizedTest` annotation instead
+  - must declare at least one _source_ that will provide the arguments for each invocation, and then _consume_ the arguments in the test method
+
+### Consuming Arguments
+
+- Parameterized test methods typically consume arguments directly from the configured source following a one-to-one correlation between argument source index and method parameter index (as with `@CsvSource`)
+- A parameterized test method may choose to aggregate arguments from the source into a single object passed to the method (see 'Argument Aggregation')
+- Additional arguments may be provided by a `ParameterResolver`
+- A parameterized test method must declare formal parameters according to the following rules:
+  - Zero or more indexed arguments must be declared first
+  - Zero or more aggregators must be declared next.
+  - Zero or more arguments supplied by a ParameterResolver must be declared last.
+- An aggregator is any parameter of type `ArgumentsAccessor` or any parameter annotated with `@AggregateWith`
+
+### Sources of Arguments
+
+- See [org.junit.jupiter.params.provider](https://junit.org/junit5/docs/current/api/org.junit.jupiter.params/org/junit/jupiter/params/provider/package-summary.html) package
+
+#### `@ValueSource`
+
+- Specifies a single array of literal values, and provide a single argument per parameterized test invocation
+- Supported literal values: `short`, `byte`, `int`, `long`, `float`, `double`, `char`, `boolean`, `java.lang.String`, `java.lang.Class`
+- See [`parameterizedtests/ValueSourceTests.java`](src/test/java/com/jashburn/junit5/parameterizedtests/ValueSourceTests.java)
+
+#### Null and Empty Sources
+
+- It can be useful to have null and empty values supplied to our parameterized tests
+- The following annotations serve as sources of null and empty values for parameterized tests that accept a single argument:
+  - `@NullSource`: provides a single null argument
+    - cannot be used for a parameter that has a primitive type
+  - `@EmptySource`: provides a single empty argument
+    - for parameters of the following types: `java.lang.String`, `java.util.List`, `java.util.Set`, `java.util.Map`, primitive arrays (e.g., `int[]`, `char[][]`), object arrays (e.g., `String[]`, `Integer[][]`)
+    - subtypes of the supported types are not supported
+  - `@NullAndEmptySource`: a composed annotation that combines the functionality of `@NullSource` and `@EmptySource`
+- Supply multiple varying types of blank strings by using `@ValueSource`
+  - `@ValueSource(strings = {" ", " ", "\t", "\n"})`
+- See [`parameterizedtests/ValueSourceTests.java`](src/test/java/com/jashburn/junit5/parameterizedtests/ValueSourceTests.java)
+
+#### `@EnumSource`
+
+- Provides a convenient way to use `Enum` constants
+- `value` attribute is optional
+  - when omitted, the declared type of the first method parameter is used
+  - is required when the test method parameter is declared with an interface type
+- `names` attribute is optional
+  - lets you specify which constants shall be used
+  - if omitted, all constants will be used
+- `mode` attribute is optional
+  - enables fine-grained control over which constants are passed to the test method
+  - e.g., you can exclude names from the enum constant pool, or specify regular expressions
+- See [`parameterizedtests/EnumSourceTests.java`](src/test/java/com/jashburn/junit5/parameterizedtests/EnumSourceTests.java)
+
+#### `@MethodSource`
+
+- Allows you to refer to one or more factory methods of the test class or external classes
+- Factory methods
+  - within the test class: must be `static` unless the test class is annotated with `@TestInstance(Lifecycle.PER_CLASS)`
+  - in external classes: must always be `static`
+  - must not accept any arguments
+- Each factory method must generate a stream of arguments
+  - stream: anything that JUnit can reliably convert into a `Stream`, such as `Stream`, `DoubleStream`, `Collection`, `Iterator`, `Iterable`, an array of objects, or an array of primitives
+  - arguments: can be supplied as an instance of `Arguments`, an array of objects (e.g., `Object[]`), or a single value if the parameterized test method accepts a single argument
+    - `Arguments`: an abstraction that provides access to an array of objects
+- Examples
+  - for all cases below, see [`parameterizedtests/MethodSourceTests.java`](src/test/java/com/jashburn/junit5/parameterizedtests/MethodSourceTests.java)
+  - if you only need a **single parameter**, you can return a `Stream` of instances of the parameter type
+    - see:
+      - `explicitLocalMethodSourceStream()`
+      - `explicitLocalMethodSourceArray()`
+  - if you do not explicitly provide a **factory method name** via `@MethodSource`, JUnit Jupiter will search for a factory method that has the same name as the current `@ParameterizedTest` method
+    - see `testWithDefaultLocalMethodSource()`
+  - streams for **primitive types** (`DoubleStream`, `IntStream`, and `LongStream`) are also supported
+    - see `testOddIntegers()`
+  - if a parameterized test method declares **multiple parameters**, you need to return a collection, stream, or array of `Arguments` instances or object arrays
+    - see:
+      - `multiArgArgumentsStream()`
+      - `multiArgArray()`
+  - an **external, `static` factory method** can be referenced by providing its fully qualified method name
+    - e.g., `@MethodSource("example.StringsProviders#tinyStrings")`
+
+#### `@CsvSource`
+
+- Allows you to express argument lists as comma-separated values (i.e., `String` literals)
+- Default delimiter is a comma (`,`), but you can use another character by setting the `delimiter` attribute
+  - `delimiterString` attribute allows you to use a String delimiter
+  - `delimiter` and `delimiterString` attributes cannot be set simultaneously
+- Uses a single quote (`'`) as its quote character
+- An empty quoted value (`''`) results in an empty `String` unless the `emptyValue` attribute is set
+- An entirely empty value is interpreted as a `null` reference
+  - by specifying one or more `nullValues`, a custom value can be interpreted as a `null` reference
+- See [`parameterizedtests/CsvSourceTests.java`](src/test/java/com/jashburn/junit5/parameterizedtests/CsvSourceTests.java)
+
+#### `@CsvFileSource`
+
+- Lets you use CSV files from the classpath
+- Any line beginning with a `#` symbol will be interpreted as a comment and will be ignored
+- Uses a double quote (`"`) as the quote character
+- See:
+  - [`parameterizedtests/CsvFileSourceTests.java`](src/test/java/com/jashburn/junit5/parameterizedtests/CsvFileSourceTests.java)
+  - [`resources/csv_file_resource.csv`](src/test/resources/csv_file_resource.csv)
+
+#### `@ArgumentsSource`
+
+- To specify a custom, reusable `ArgumentsProvider`
+  - an implementation of `ArgumentsProvider` must be declared as either a top-level class or as a `static` nested class
+- See [`parameterizedtests/ArgumentsSourceTests.java`](src/test/java/com/jashburn/junit5/parameterizedtests/ArgumentsSourceTests.java)
+
+### Argument Conversion
+
+#### Widening Conversion
+
+- JUnit Jupiter supports [Widening Primitive Conversion](https://docs.oracle.com/javase/specs/jls/se8/html/jls-5.html#jls-5.1.2) for arguments supplied to a `@ParameterizedTest`
+  - e.g., a parameterized test annotated with `@ValueSource(ints = { 1, 2, 3 })` can be declared to accept not only an argument of type `int` but also an argument of type `long`, `float`, or `double`
+
+#### Implicit Conversion
+
+- To support use cases like `@CsvSource`, JUnit Jupiter provides a number of built-in implicit type converters
+  - conversion process depends on the declared type of each method parameter
+- `String` instances are implicitly converted to a number of target types
+  - see <https://junit.org/junit5/docs/current/user-guide/#writing-tests-parameterized-tests-argument-conversion-implicit>
+- Fallback String-to-Object conversion
+  - JUnit Jupiter also provides a fallback mechanism for automatic conversion from a `String` to a given target type if the target type declares exactly one suitable:
+    - **factory method**
+      - a non-private, `static` method declared in the target type that accepts a single `String` argument and returns an instance of the target type
+      - the name of the method can be arbitrary
+    - **factory constructor**
+      - a non-private constructor in the target type that accepts a single `String` argument
+      - the target type must be declared as either a top-level class or as a `static` nested class
+    - if multiple factory methods are discovered, they will be ignored
+    - if a factory method and a factory constructor are discovered, the factory method will be used instead of the constructor
+  - see:
+    - [`parameterizedtests/ImplicitStringToObjectConversion.java`](src/test/java/com/jashburn/junit5/parameterizedtests/ImplicitStringToObjectConversion.java)
+    - [`parameterizedtests/Book.java`](src/main/java/com/jashburn/junit5/parameterizedtests/Book.java)
+
+#### Explicit conversion
+
+- You may explicitly specify an `ArgumentConverter` to use for a certain parameter using the `@ConvertWith` annotation
+- An implementation of `ArgumentConverter` must be declared as either a top-level class or as a `static` nested class
+- See [`parameterizedtests/ExplicitConversion.java`](src/test/java/com/jashburn/junit5/parameterizedtests/ExplicitConversion.java)
+- `junit-jupiter-params` provides a single explicit argument converter that may also serve as a reference implementation: `JavaTimeArgumentConverter`
+  - used via the composed annotation `JavaTimeConversionPattern`
+
+### Argument Aggregation
+
+- By default, each argument provided to a `@ParameterizedTest` method corresponds to a single method parameter
+  - argument sources that are expected to supply a large number of arguments can lead to large method signatures
+- An `ArgumentsAccessor` can be used instead of multiple parameters
+  - access the provided arguments through a single argument passed to your test method
+  - type conversion is supported as discussed in 'Implicit Conversion'
+- See `argumentsAccessor()` in [`parameterizedtests/ArgumentAggregation.java`](src/test/java/com/jashburn/junit5/parameterizedtests/ArgumentAggregation.java)
+- JUnit Jupiter also supports the usage of reusable **custom aggregators**
+  - implement the `ArgumentsAggregator` interface and register it via the `@AggregateWith` annotation on a compatible parameter in the `@ParameterizedTest` method
+  - result of the aggregation will then be provided as an argument for the corresponding parameter
+  - an implementation of `ArgumentsAggregator` must be declared as either a top-level class or as a static nested class
+    -see `customArgumentsAggregator()` in [`parameterizedtests/ArgumentAggregation.java`](src/test/java/com/jashburn/junit5/parameterizedtests/ArgumentAggregation.java)
+- You can create a **custom composed annotation** such as `@CsvToMyType` that is meta-annotated with `@AggregateWith(MyTypeAggregator.class)`
+  - see:
+    - [`parameterizedtests/CsvToPerson.java`](src/test/java/com/jashburn/junit5/parameterizedtests/CsvToPerson.java)
+    - `customAggregatorAnnotation()` in [`parameterizedtests/ArgumentAggregation.java`](src/test/java/com/jashburn/junit5/parameterizedtests/ArgumentAggregation.java)
+
+### Customizing Display Names
+
+- You can customize invocation display names via the `name` attribute of the `@ParameterizedTest` annotation
+- See [`parameterizedtests/CustomDisplayNames.java`](src/test/java/com/jashburn/junit5/parameterizedtests/CustomDisplayNames.java)
+
+>>>>>>> dev
 ## Sources
 
 - "JUnit 5 User Guide." <https://junit.org/junit5/docs/current/user-guide/>.
