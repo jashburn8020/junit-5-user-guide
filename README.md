@@ -395,6 +395,22 @@ class TaggingDemo {
 
 ### Argument Aggregation
 
+- By default, each argument provided to a `@ParameterizedTest` method corresponds to a single method parameter
+  - argument sources that are expected to supply a large number of arguments can lead to large method signatures
+- An `ArgumentsAccessor` can be used instead of multiple parameters
+  - access the provided arguments through a single argument passed to your test method
+  - type conversion is supported as discussed in 'Implicit Conversion'
+- See `argumentsAccessor()` in [`parameterizedtests/ArgumentAggregation.java`](src/test/java/com/jashburn/junit5/parameterizedtests/ArgumentAggregation.java)
+- JUnit Jupiter also supports the usage of reusable **custom aggregators**
+  - implement the `ArgumentsAggregator` interface and register it via the `@AggregateWith` annotation on a compatible parameter in the `@ParameterizedTest` method
+  - result of the aggregation will then be provided as an argument for the corresponding parameter
+  - an implementation of `ArgumentsAggregator` must be declared as either a top-level class or as a static nested class
+    -see `customArgumentsAggregator()` in [`parameterizedtests/ArgumentAggregation.java`](src/test/java/com/jashburn/junit5/parameterizedtests/ArgumentAggregation.java)
+- You can create a **custom composed annotation** such as `@CsvToMyType` that is meta-annotated with `@AggregateWith(MyTypeAggregator.class)`
+  - see:
+    - [`parameterizedtests/CsvToPerson.java`](src/test/java/com/jashburn/junit5/parameterizedtests/CsvToPerson.java)
+    - `customAggregatorAnnotation()` in [`parameterizedtests/ArgumentAggregation.java`](src/test/java/com/jashburn/junit5/parameterizedtests/ArgumentAggregation.java)
+
 ## Sources
 
 - "JUnit 5 User Guide." <https://junit.org/junit5/docs/current/user-guide/>.
