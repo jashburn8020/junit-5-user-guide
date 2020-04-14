@@ -358,6 +358,43 @@ class TaggingDemo {
   - an implementation of `ArgumentsProvider` must be declared as either a top-level class or as a `static` nested class
 - See [`parameterizedtests/ArgumentsSourceTests.java`](src/test/java/com/jashburn/junit5/parameterizedtests/ArgumentsSourceTests.java)
 
+### Argument Conversion
+
+#### Widening Conversion
+
+- JUnit Jupiter supports [Widening Primitive Conversion](https://docs.oracle.com/javase/specs/jls/se8/html/jls-5.html#jls-5.1.2) for arguments supplied to a `@ParameterizedTest`
+  - e.g., a parameterized test annotated with `@ValueSource(ints = { 1, 2, 3 })` can be declared to accept not only an argument of type `int` but also an argument of type `long`, `float`, or `double`
+
+#### Implicit Conversion
+
+- To support use cases like `@CsvSource`, JUnit Jupiter provides a number of built-in implicit type converters
+  - conversion process depends on the declared type of each method parameter
+- `String` instances are implicitly converted to a number of target types
+  - see <https://junit.org/junit5/docs/current/user-guide/#writing-tests-parameterized-tests-argument-conversion-implicit>
+- Fallback String-to-Object conversion
+  - JUnit Jupiter also provides a fallback mechanism for automatic conversion from a `String` to a given target type if the target type declares exactly one suitable:
+    - **factory method**
+      - a non-private, `static` method declared in the target type that accepts a single `String` argument and returns an instance of the target type
+      - the name of the method can be arbitrary
+    - **factory constructor**
+      - a non-private constructor in the target type that accepts a single `String` argument
+      - the target type must be declared as either a top-level class or as a `static` nested class
+    - if multiple factory methods are discovered, they will be ignored
+    - if a factory method and a factory constructor are discovered, the factory method will be used instead of the constructor
+  - see:
+    - [`parameterizedtests/ImplicitStringToObjectConversion.java`](src/test/java/com/jashburn/junit5/parameterizedtests/ImplicitStringToObjectConversion.java)
+    - [`parameterizedtests/Book.java`](src/main/java/com/jashburn/junit5/parameterizedtests/Book.java)
+
+#### Explicit conversion
+
+- You may explicitly specify an `ArgumentConverter` to use for a certain parameter using the `@ConvertWith` annotation
+- An implementation of `ArgumentConverter` must be declared as either a top-level class or as a `static` nested class
+- See [`parameterizedtests/ExplicitConversion.java`](src/test/java/com/jashburn/junit5/parameterizedtests/ExplicitConversion.java)
+- `junit-jupiter-params` provides a single explicit argument converter that may also serve as a reference implementation: `JavaTimeArgumentConverter`
+  - used via the composed annotation `JavaTimeConversionPattern`
+
+### Argument Aggregation
+
 ## Sources
 
 - "JUnit 5 User Guide." <https://junit.org/junit5/docs/current/user-guide/>.
