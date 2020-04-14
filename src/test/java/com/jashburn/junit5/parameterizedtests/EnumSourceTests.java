@@ -11,7 +11,7 @@ import org.junit.jupiter.params.provider.EnumSource.Mode;
 
 /**
  * Run using:
- * <code>java -jar /path/to/junit-platform-console-standalone-1.6.2.jar --class-path='target/test-classes;target/classes' --scan-class-path --include-package='com.jashburn.junit5.parameterizedtests'</code>
+ * <code>java -jar /path/to//junit-platform-console-standalone-1.6.2.jar --class-path='target/test-classes;target/classes' --scan-class-path --include-package='com.jashburn.junit5.parameterizedtests' --include-classname='.*'</code>
  * <p>
  * <code>junit-platform-console-standalone-1.6.2.jar</code> needs to be downloaded separately.
  * <p>

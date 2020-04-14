@@ -411,6 +411,11 @@ class TaggingDemo {
     - [`parameterizedtests/CsvToPerson.java`](src/test/java/com/jashburn/junit5/parameterizedtests/CsvToPerson.java)
     - `customAggregatorAnnotation()` in [`parameterizedtests/ArgumentAggregation.java`](src/test/java/com/jashburn/junit5/parameterizedtests/ArgumentAggregation.java)
 
+### Customizing Display Names
+
+- You can customize invocation display names via the `name` attribute of the `@ParameterizedTest` annotation
+- See [`parameterizedtests/CustomDisplayNames.java`](src/test/java/com/jashburn/junit5/parameterizedtests/CustomDisplayNames.java)
+
 ## Sources
 
 - "JUnit 5 User Guide." <https://junit.org/junit5/docs/current/user-guide/>.
