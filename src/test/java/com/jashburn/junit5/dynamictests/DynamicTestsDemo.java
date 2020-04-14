@@ -201,6 +201,12 @@ class DynamicTestsDemo {
         );
     }
 
+    /**
+     * Use this method when the set of dynamic tests is nondeterministic in nature. The supplied
+     * inputGenerator is responsible for generating input values. A DynamicTest will be added to the
+     * resulting stream for each dynamically generated input value, using the supplied
+     * displayNameGenerator and testExecutor
+     */
     @TestFactory
     Stream<? extends DynamicNode> dynamicNumberOfTests() {
         Iterator<Integer> evenNumsGenerator = EvenNumbersGenerator.generator();
