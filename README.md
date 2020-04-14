@@ -234,11 +234,7 @@ class TaggingDemo {
 
 ## Repeated Tests
 
-<<<<<<< HEAD
-- Repeat a test a specified number of times by annotating a method with `@RepeatedTest` and specifying the total number of repetitions
-=======
 - Repeats a test a specified number of times by annotating a method with `@RepeatedTest` and specifying the total number of repetitions
->>>>>>> dev
 - Each invocation of a repeated test behaves like the execution of a regular `@Test` method with full support for the same lifecycle callbacks and extensions
 - A custom display name can be configured for each repetition via the `name` attribute of the `@RepeatedTest` annotation
   - display name can be a pattern composed of a combination of static text and dynamic placeholders
@@ -250,8 +246,6 @@ class TaggingDemo {
 - Inject an instance of `RepetitionInfo` into `@RepeatedTest`, `@BeforeEach`, or `@AfterEach` method to retrieve information about the current repetition and the total number of repetitions
 - See [`repeatedtests/RepeatedTestsDemo.java`](src/test/java/com/jashburn/junit5/repeatedtests/RepeatedTestsDemo.java)
 
-<<<<<<< HEAD
-=======
 ## Parameterized Tests
 
 - Parameterized tests make it possible to run a test multiple times with different arguments
